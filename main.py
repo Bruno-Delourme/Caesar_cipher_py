@@ -33,14 +33,55 @@ def keyword_cipher(text, keyword, decrypt=False):
             result += char
     return result
 
-texte = 'Cipher Caesar'
-texte_chiffre = caesar_cipher(texte, 1)
-print(f"Texte chiffré (César): {texte_chiffre}")
-texte_dechiffre = caesar_cipher(texte_chiffre, 1, decrypt=True)
-print(f"Texte déchiffré (César): {texte_dechiffre}")
+def menu():
+    while True:
+        print("\n=== Menu de Chiffrement ===")
+        print("1. Chiffrement César")
+        print("2. Chiffrement par mot-clé")
+        print("3. Quitter")
+        
+        choix = input("\nChoisissez une option (1-3): ")
+        
+        if choix == "3":
+            print("Au revoir!")
+            break
+            
+        texte = input("Entrez le texte à traiter: ")
+        
+        if choix == "1":
+            try:
+                decalage = int(input("Entrez le décalage (nombre entier): "))
+                action = input("Chiffrer (C) ou Déchiffrer (D)? ").upper()
+                
+                if action == "C":
+                    resultat = caesar_cipher(texte, decalage)
+                elif action == "D":
+                    resultat = caesar_cipher(texte, decalage, decrypt=True)
+                else:
+                    print("Action non valide!")
+                    continue
+                    
+                print(f"\nRésultat: {resultat}")
+                
+            except ValueError:
+                print("Erreur: Le décalage doit être un nombre entier!")
+                
+        elif choix == "2":
+            mot_cle = input("Entrez le mot-clé: ")
+            action = input("Chiffrer (C) ou Déchiffrer (D)? ").upper()
+            
+            if action == "C":
+                resultat = keyword_cipher(texte, mot_cle)
+            elif action == "D":
+                resultat = keyword_cipher(texte, mot_cle, decrypt=True)
+            else:
+                print("Action non valide!")
+                continue
+                
+            print(f"\nRésultat: {resultat}")
+            
+        else:
+            print("Option non valide!")
 
-mot_cle = "SECRET"
-texte_chiffre_mc = keyword_cipher(texte, mot_cle)
-print(f"Texte chiffré (mot-clé): {texte_chiffre_mc}")
-texte_dechiffre_mc = keyword_cipher(texte_chiffre_mc, mot_cle, decrypt=True)
-print(f"Texte déchiffré (mot-clé): {texte_dechiffre_mc}")
+if __name__ == "__main__":
+    menu()
