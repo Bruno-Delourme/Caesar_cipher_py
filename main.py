@@ -33,19 +33,35 @@ def keyword_cipher(text, keyword, decrypt=False):
             result += char
     return result
 
+def save_history(text, result, method, action):
+    with open('historique.txt', 'a', encoding='utf-8') as f:
+        f.write(f"{method} - {action}: '{text}' → '{result}'\n")
+
 def menu():
     while True:
         print("\n=== Menu de Chiffrement ===")
         print("1. Chiffrement César")
         print("2. Chiffrement par mot-clé")
-        print("3. Quitter")
+        print("3. Voir l'historique")
+        print("4. Quitter")
         
-        choix = input("\nChoisissez une option (1-3): ")
+        choix = input("\nChoisissez une option (1-4): ")
         
-        if choix == "3":
+        if choix == "4":
             print("Au revoir!")
             break
             
+        if choix == "3":
+            try:
+                with open('historique.txt', 'r', encoding='utf-8') as f:
+                    historique = f.read()
+                    print("\n=== Historique des chiffrements ===")
+                    print(historique if historique else "Aucun historique disponible")
+                continue
+            except FileNotFoundError:
+                print("Aucun historique disponible")
+                continue
+                
         texte = input("Entrez le texte à traiter: ")
         
         if choix == "1":
@@ -55,8 +71,10 @@ def menu():
                 
                 if action == "C":
                     resultat = caesar_cipher(texte, decalage)
+                    save_history(texte, resultat, "César", "Chiffrement")
                 elif action == "D":
                     resultat = caesar_cipher(texte, decalage, decrypt=True)
+                    save_history(texte, resultat, "César", "Déchiffrement")
                 else:
                     print("Action non valide!")
                     continue
@@ -72,8 +90,10 @@ def menu():
             
             if action == "C":
                 resultat = keyword_cipher(texte, mot_cle)
+                save_history(texte, resultat, f"Mot-clé ({mot_cle})", "Chiffrement")
             elif action == "D":
                 resultat = keyword_cipher(texte, mot_cle, decrypt=True)
+                save_history(texte, resultat, f"Mot-clé ({mot_cle})", "Déchiffrement")
             else:
                 print("Action non valide!")
                 continue
