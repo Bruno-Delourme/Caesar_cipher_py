@@ -43,11 +43,12 @@ def menu():
         print("1. Chiffrement César")
         print("2. Chiffrement par mot-clé")
         print("3. Voir l'historique")
-        print("4. Quitter")
+        print("4. Effacer l'historique")
+        print("5. Quitter")
         
-        choix = input("\nChoisissez une option (1-4): ")
+        choix = input("\nChoisissez une option (1-5): ")
         
-        if choix == "4":
+        if choix == "5":
             print("Au revoir!")
             break
             
@@ -61,6 +62,15 @@ def menu():
             except FileNotFoundError:
                 print("Aucun historique disponible")
                 continue
+                
+        if choix == "4":
+            try:
+                with open('historique.txt', 'w', encoding='utf-8') as f:
+                    f.write("")
+                print("L'historique a été effacé avec succès!")
+            except:
+                print("Erreur lors de l'effacement de l'historique")
+            continue
                 
         texte = input("Entrez le texte à traiter: ")
         
