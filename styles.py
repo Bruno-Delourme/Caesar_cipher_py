@@ -45,55 +45,40 @@ STYLES = {
         'pady': 25
     },
     'label': {
-        'font': (FONT_FAMILY, 11),
+        'font': ('Helvetica', 11),
         'bg': COLORS['bg_main'],
         'fg': COLORS['text'],
         'pady': 8
     },
     'entry': {
-        'font': (FONT_FAMILY, 11),
+        'font': ('Helvetica', 11),
         'bg': COLORS['bg_input'],
         'relief': 'solid',
         'borderwidth': 1,
         'width': 50
     },
     'button': {
-        'font': (FONT_FAMILY, 10),
+        'font': ('Helvetica', 10),
         'bg': COLORS['accent'],
         'fg': 'white',
         'pady': 8,
         'padx': 15,
         'relief': 'flat',
-        'cursor': 'hand2',
-        'borderwidth': 0,
-        'highlightthickness': 0,
-        'border': 0,
-    },
-    'rounded_button': {
-        'font': (FONT_FAMILY, 10),
-        'bg': COLORS['accent'],
-        'fg': 'white',
-        'pady': 8,
-        'padx': 15,
-        'relief': 'flat',
-        'cursor': 'hand2',
-        'borderwidth': 0,
-        'highlightthickness': 0,
-        'border': 0,
+        'cursor': 'hand2'
     },
     'result': {
-        'font': (FONT_FAMILY, 12, 'bold'),
+        'font': ('Helvetica', 12, 'bold'),
         'bg': COLORS['bg_main'],
         'fg': COLORS['text'],
         'pady': 15
     },
     'radio': {
         'bg': COLORS['bg_main'],
-        'font': (FONT_FAMILY, 10),
+        'font': ('Helvetica', 10),
         'padx': 5
     },
     'help_button': {
-        'font': (FONT_FAMILY, 10, 'bold'),
+        'font': ('Helvetica', 10, 'bold'),
         'bg': COLORS['bg_main'],
         'fg': COLORS['accent'],
         'pady': 2,
@@ -110,14 +95,11 @@ STYLES = {
         'pady': 20
     },
     'help_text': {
-        'font': (FONT_FAMILY, 11),
+        'font': ('Helvetica', 11),
         'bg': COLORS['bg_main'],
         'fg': COLORS['text'],
         'pady': 5,
         'justify': 'left',
         'wraplength': 400
     }
-}
-
-# Configuration des boutons arrondis
-BUTTON_RADIUS = 15  # Rayon des coins arrondis 
+} 

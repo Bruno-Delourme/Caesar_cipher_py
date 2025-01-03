@@ -65,17 +65,17 @@ class CipherGUI:
         self.param_entry = tk.Entry(self.param_frame, **STYLES['entry'])
         self.param_entry.pack(side=tk.LEFT, padx=5)
         
-        # Boutons
+        # Boutons d'action
         button_frame = tk.Frame(main_frame, **WIDGET_CONFIG['button_frame'])
         button_frame.pack()
         
-        self.theme_manager.create_rounded_button(
+        self.theme_manager.create_button(
             button_frame, 
             "Chiffrer", 
             lambda: self.process_text(False)
         ).pack(side=tk.LEFT, padx=5)
         
-        self.theme_manager.create_rounded_button(
+        self.theme_manager.create_button(
             button_frame, 
             "Déchiffrer", 
             lambda: self.process_text(True)
@@ -88,12 +88,13 @@ class CipherGUI:
         tk.Label(result_frame, textvariable=self.result_var, **STYLES['result']).pack(side=tk.LEFT)
         
         # Bouton copier
-        self.copy_button = self.theme_manager.create_rounded_button(
+        self.copy_button = self.theme_manager.create_button(
             result_frame, 
             "📋 Copier", 
             self.copy_result
         )
         self.copy_button.pack(side=tk.LEFT, padx=5)
+        self.copy_button['state'] = 'disabled'
         
         # Binding des événements
         self.cipher_method.trace('w', self.update_param_label)
