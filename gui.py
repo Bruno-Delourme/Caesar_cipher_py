@@ -21,10 +21,25 @@ class CipherGUI:
         main_frame = tk.Frame(self.root, **STYLES['frame'])
         main_frame.pack(expand=True, fill='both')
         
-        # Zone de saisie
-        tk.Label(main_frame, text="Texte à traiter:", **STYLES['label']).pack()
-        self.text_input = tk.Entry(main_frame, **STYLES['entry'])
-        self.text_input.pack(pady=5)
+        # Zone de saisie avec bouton Clear
+        input_frame = tk.Frame(main_frame, bg=COLORS['bg_main'])
+        input_frame.pack()
+        
+        tk.Label(input_frame, text="Texte à traiter:", **STYLES['label']).pack()
+        
+        # Frame pour le texte et son bouton Clear
+        text_clear_frame = tk.Frame(input_frame, bg=COLORS['bg_main'])
+        text_clear_frame.pack()
+        
+        self.text_input = tk.Entry(text_clear_frame, **STYLES['entry'])
+        self.text_input.pack(side=tk.LEFT, pady=5)
+        
+        clear_text_btn = self.theme_manager.create_button(
+            text_clear_frame, 
+            "Clear", 
+            self.clear_fields
+        )
+        clear_text_btn.pack(side=tk.LEFT, padx=5)
         
         # Sélection de la méthode avec boutons d'aide
         method_frame = tk.Frame(main_frame, **WIDGET_CONFIG['radio_frame'])
@@ -62,7 +77,7 @@ class CipherGUI:
         self.param_label = tk.Label(self.param_frame, text="Décalage:", **STYLES['label'])
         self.param_label.pack(side=tk.LEFT)
         
-        self.param_entry = tk.Entry(self.param_frame, **STYLES['entry'])
+        self.param_entry = tk.Entry(self.param_frame, **STYLES['entry_small'])
         self.param_entry.pack(side=tk.LEFT, padx=5)
         
         # Boutons d'action
@@ -106,16 +121,20 @@ class CipherGUI:
             self.param_label.config(text="Mot-clé:")
             
     def copy_result(self):
-        """Copie le résultat dans le presse-papiers"""
-        result = self.result_var.get().replace("Résultat: ", "")
+        """Copie uniquement le texte chiffré/déchiffré sans le préfixe 'Résultat: '"""
+        result_text = self.result_var.get()
+        # Enlève le préfixe "Résultat: " s'il existe
+        if result_text.startswith("Résultat: "):
+            result_text = result_text[9:]  # Longueur de "Résultat: "
+            
         self.root.clipboard_clear()
-        self.root.clipboard_append(result)
+        self.root.clipboard_append(result_text)
         self.root.update()  # nécessaire pour certains systèmes
         
         # Feedback visuel temporaire
         original_text = self.copy_button['text']
         self.copy_button['text'] = "✓ Copié!"
-        self.root.after(1500, lambda: self.copy_button.config(text=original_text))
+        self.root.after(1500, lambda: self.copy_button.configure(text=original_text))
         
     def process_text(self, decrypt=False):
         text = self.text_input.get()
@@ -127,12 +146,17 @@ class CipherGUI:
                 shift = int(param)
                 result = caesar_cipher(text, shift, decrypt)
             else:
+                if not param.strip():
+                    messagebox.showerror("Erreur", "Le mot-clé ne peut pas être vide!")
+                    return
                 result = keyword_cipher(text, param, decrypt)
                 
             self.result_var.set(f"Résultat: {result}")
+            self.copy_button['state'] = 'normal'
             
         except ValueError as e:
             messagebox.showerror("Erreur", "Paramètre invalide!")
+            self.copy_button['state'] = 'disabled'
         
     def show_help(self, method_type):
         """Affiche une fenêtre d'aide avec des exemples concis"""
@@ -187,3 +211,10 @@ BONJOUR → YPKGPXS"""
         help_window.transient(self.root)
         help_window.grab_set()
         self.root.wait_window(help_window) 
+
+    def clear_fields(self):
+        """Réinitialise tous les champs"""
+        self.text_input.delete(0, tk.END)
+        self.param_entry.delete(0, tk.END)
+        self.result_var.set("")
+        self.copy_button['state'] = 'disabled' 

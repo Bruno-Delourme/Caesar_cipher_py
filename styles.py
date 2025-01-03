@@ -57,6 +57,13 @@ STYLES = {
         'borderwidth': 1,
         'width': 50
     },
+    'entry_small': {
+        'font': ('Helvetica', 11),
+        'bg': COLORS['bg_input'],
+        'relief': 'solid',
+        'borderwidth': 1,
+        'width': 15
+    },
     'button': {
         'font': ('Helvetica', 10),
         'bg': COLORS['accent'],
