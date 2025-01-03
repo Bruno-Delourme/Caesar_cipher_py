@@ -37,6 +37,19 @@ def save_history(text, result, method, action):
     with open('historique.txt', 'a', encoding='utf-8') as f:
         f.write(f"{method} - {action}: '{text}' → '{result}'\n")
 
+def display_cipher_alphabet(method, shift=None, keyword=None):
+    alphabet = 'abcdefghijklmnopqrstuvwxyz'
+    if method == "caesar":
+        cipher_alphabet = ''.join(alphabet[(i + shift) % 26] for i in range(26))
+    elif method == "keyword":
+        keyword = ''.join(dict.fromkeys(keyword.lower()))
+        cipher_alphabet = keyword + ''.join(c for c in alphabet if c not in keyword)
+    
+    print("\nCorrespondance des alphabets:")
+    print("Original :", ' '.join(alphabet))
+    print("Chiffré  :", ' '.join(cipher_alphabet))
+    print()
+
 def menu():
     while True:
         print("\n=== Menu de Chiffrement ===")
@@ -77,6 +90,7 @@ def menu():
         if choix == "1":
             try:
                 decalage = int(input("Entrez le décalage (nombre entier): "))
+                display_cipher_alphabet("caesar", shift=decalage)
                 action = input("Chiffrer (C) ou Déchiffrer (D)? ").upper()
                 
                 if action == "C":
@@ -96,6 +110,7 @@ def menu():
                 
         elif choix == "2":
             mot_cle = input("Entrez le mot-clé: ")
+            display_cipher_alphabet("keyword", keyword=mot_cle)
             action = input("Chiffrer (C) ou Déchiffrer (D)? ").upper()
             
             if action == "C":
