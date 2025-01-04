@@ -2,21 +2,22 @@ import tkinter.font as tkfont
 import os
 
 # Définition de la police par défaut
-FONT_FAMILY = 'Helvetica'  # Police par défaut
+FONT_FAMILY = 'Segoe UI'  # Plus moderne que Helvetica, bien supportée sur Windows/Mac/Linux
 
 # Couleurs
 COLORS = {
-    'bg_main': '#f0f0f0',
+    'bg_main': '#f8f9fa',      # Gris très clair, plus doux
     'bg_input': '#ffffff',
-    'accent': '#007bff',
-    'text': '#333333',
-    'error': '#dc3545'
+    'accent': '#4361ee',       # Bleu plus moderne
+    'text': '#2b2d42',         # Gris foncé plus doux
+    'error': '#ef233c',
+    'hover': '#3046c5'         # Couleur pour les effets hover
 }
 
 # Configuration des widgets
 WIDGET_CONFIG = {
     'main_window': {
-        'title': "Chiffrement de texte",
+        'title': "Text Encryption",
         'bg': COLORS['bg_main']
     },
     'radio_frame': {
@@ -41,20 +42,20 @@ WIDGET_CONFIG = {
 STYLES = {
     'frame': {
         'bg': COLORS['bg_main'],
-        'padx': 30,
-        'pady': 25
+        'padx': 35,            # Padding légèrement augmenté
+        'pady': 30
     },
     'label': {
-        'font': ('Helvetica', 11),
+        'font': (FONT_FAMILY, 11),
         'bg': COLORS['bg_main'],
         'fg': COLORS['text'],
-        'pady': 8
+        'pady': 10
     },
     'entry': {
-        'font': ('Helvetica', 11),
+        'font': (FONT_FAMILY, 11),
         'bg': COLORS['bg_input'],
-        'relief': 'solid',
-        'borderwidth': 1,
+        'relief': 'flat',      # Bordure plate plus moderne
+        'borderwidth': 0,
         'width': 50
     },
     'entry_small': {
@@ -65,13 +66,15 @@ STYLES = {
         'width': 15
     },
     'button': {
-        'font': ('Helvetica', 10),
+        'font': (FONT_FAMILY, 10, 'bold'),  # Texte en gras
         'bg': COLORS['accent'],
         'fg': 'white',
-        'pady': 8,
-        'padx': 15,
+        'pady': 10,            # Padding augmenté
+        'padx': 20,
         'relief': 'flat',
-        'cursor': 'hand2'
+        'cursor': 'hand2',
+        'borderwidth': 0,      # Pas de bordure
+        'highlightthickness': 0  # Supprime la bordure de focus
     },
     'result': {
         'font': ('Helvetica', 12, 'bold'),
@@ -85,16 +88,17 @@ STYLES = {
         'padx': 5
     },
     'help_button': {
-        'font': ('Helvetica', 10, 'bold'),
+        'font': (FONT_FAMILY, 10, 'bold'),
         'bg': COLORS['bg_main'],
         'fg': COLORS['accent'],
-        'pady': 2,
-        'padx': 6,
+        'pady': 4,
+        'padx': 8,
         'relief': 'flat',
         'cursor': 'hand2',
-        'borderwidth': 1,
+        'borderwidth': 0,
         'width': 2,
-        'height': 1
+        'height': 1,
+        'highlightthickness': 0
     },
     'help_window': {
         'bg': COLORS['bg_main'],

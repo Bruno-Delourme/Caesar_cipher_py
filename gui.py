@@ -25,7 +25,7 @@ class CipherGUI:
         input_frame = tk.Frame(main_frame, bg=COLORS['bg_main'])
         input_frame.pack()
         
-        tk.Label(input_frame, text="Texte à traiter:", **STYLES['label']).pack()
+        tk.Label(input_frame, text="Text to process:", **STYLES['label']).pack()
         
         # Frame pour le texte et son bouton Clear
         text_clear_frame = tk.Frame(input_frame, bg=COLORS['bg_main'])
@@ -57,7 +57,7 @@ class CipherGUI:
         # César avec son bouton d'aide
         cesar_frame = tk.Frame(radio_help_frame, bg=COLORS['bg_main'])
         cesar_frame.pack(side=tk.LEFT, padx=10)
-        tk.Radiobutton(cesar_frame, text="César", variable=self.cipher_method, 
+        tk.Radiobutton(cesar_frame, text="Caesar", variable=self.cipher_method, 
                       value="caesar", **STYLES['radio']).pack(side=tk.LEFT)
         tk.Button(cesar_frame, text="?", 
                  command=lambda: self.show_help("caesar"), **STYLES['help_button']).pack(side=tk.LEFT, padx=2)
@@ -65,7 +65,7 @@ class CipherGUI:
         # Mot-clé avec son bouton d'aide
         keyword_frame = tk.Frame(radio_help_frame, bg=COLORS['bg_main'])
         keyword_frame.pack(side=tk.LEFT, padx=10)
-        tk.Radiobutton(keyword_frame, text="Mot-clé", variable=self.cipher_method, 
+        tk.Radiobutton(keyword_frame, text="Keyword", variable=self.cipher_method, 
                       value="keyword", **STYLES['radio']).pack(side=tk.LEFT)
         tk.Button(keyword_frame, text="?", 
                  command=lambda: self.show_help("keyword"), **STYLES['help_button']).pack(side=tk.LEFT, padx=2)
@@ -74,7 +74,7 @@ class CipherGUI:
         self.param_frame = tk.Frame(main_frame, **WIDGET_CONFIG['param_frame'])
         self.param_frame.pack()
         
-        self.param_label = tk.Label(self.param_frame, text="Décalage:", **STYLES['label'])
+        self.param_label = tk.Label(self.param_frame, text="Shift:", **STYLES['label'])
         self.param_label.pack(side=tk.LEFT)
         
         self.param_entry = tk.Entry(self.param_frame, **STYLES['entry_small'])
@@ -86,13 +86,13 @@ class CipherGUI:
         
         self.theme_manager.create_button(
             button_frame, 
-            "Chiffrer", 
+            "Encrypt", 
             lambda: self.process_text(False)
         ).pack(side=tk.LEFT, padx=5)
         
         self.theme_manager.create_button(
             button_frame, 
-            "Déchiffrer", 
+            "Decrypt", 
             lambda: self.process_text(True)
         ).pack(side=tk.LEFT, padx=5)
         
@@ -105,7 +105,7 @@ class CipherGUI:
         # Bouton copier
         self.copy_button = self.theme_manager.create_button(
             result_frame, 
-            "📋 Copier", 
+            "📋 Copy", 
             self.copy_result
         )
         self.copy_button.pack(side=tk.LEFT, padx=5)
@@ -116,9 +116,9 @@ class CipherGUI:
         
     def update_param_label(self, *args):
         if self.cipher_method.get() == "caesar":
-            self.param_label.config(text="Décalage:")
+            self.param_label.config(text="Shift:")
         else:
-            self.param_label.config(text="Mot-clé:")
+            self.param_label.config(text="Keyword:")
             
     def copy_result(self):
         """Copie uniquement le texte chiffré/déchiffré sans le préfixe 'Résultat: '"""
@@ -133,7 +133,7 @@ class CipherGUI:
         
         # Feedback visuel temporaire
         original_text = self.copy_button['text']
-        self.copy_button['text'] = "✓ Copié!"
+        self.copy_button['text'] = "✓ Copied!"
         self.root.after(1500, lambda: self.copy_button.configure(text=original_text))
         
     def process_text(self, decrypt=False):
@@ -147,56 +147,56 @@ class CipherGUI:
                 result = caesar_cipher(text, shift, decrypt)
             else:
                 if not param.strip():
-                    messagebox.showerror("Erreur", "Le mot-clé ne peut pas être vide!")
+                    messagebox.showerror("Error", "Keyword cannot be empty!")
                     return
                 result = keyword_cipher(text, param, decrypt)
                 
-            self.result_var.set(f"Résultat: {result}")
+            self.result_var.set(f"Result: {result}")
             self.copy_button['state'] = 'normal'
             
         except ValueError as e:
-            messagebox.showerror("Erreur", "Paramètre invalide!")
+            messagebox.showerror("Error", "Invalid parameter!")
             self.copy_button['state'] = 'disabled'
         
     def show_help(self, method_type):
         """Affiche une fenêtre d'aide avec des exemples concis"""
         help_window = tk.Toplevel(self.root)
-        help_window.title("Aide - Chiffrement")
+        help_window.title("Help - Encryption")
         help_window.configure(bg=COLORS['bg_main'])
         
         frame = tk.Frame(help_window, **STYLES['help_window'])
         frame.pack(expand=True, fill='both')
         
         if method_type == "caesar":
-            title = "Chiffrement de César"
-            text = """Décale chaque lettre de l'alphabet d'un nombre fixe de positions.
+            title = "Caesar Cipher"
+            text = """Shifts each letter in the alphabet by a fixed number of positions.
 
-Exemple avec décalage de 3:
-BONJOUR → ERQMRXU
-(B+3=E, O+3=R, N+3=Q, etc.)
+Example with shift of 3:
+HELLO → KHOOR
+(H+3=K, E+3=H, L+3=O, etc.)
 
-Exemple avec décalage de 1:
+Example with shift of 1:
 HELLO → IFMMP
 (H+1=I, E+1=F, L+1=M, etc.)"""
 
         else:
-            title = "Chiffrement par Mot-clé"
-            text = """Crée un alphabet personnalisé à partir d'un mot-clé.
+            title = "Keyword Cipher"
+            text = """Creates a custom alphabet using a keyword.
 
-Exemple avec mot-clé "SECRET":
-Nouvel alphabet: SECRETABDFGHIJKLMNOPQUVWXYZ
-BONJOUR → YPKGPXS
+Example with keyword "SECRET":
+New alphabet: SECRETABDFGHIJKLMNOPQUVWXYZ
+HELLO → KBPPJ
 
-Exemple avec mot-clé "CLE":
-Nouvel alphabet: CLEABDFGHIJKMNOPQRSTUVWXYZ
-BONJOUR → YPKGPXS"""
+Example with keyword "KEY":
+New alphabet: KEYABCDFGHIJLMNOPQRSTUVWXZ
+HELLO → KBPPJ"""
         
         tk.Label(frame, text=title, font=(STYLES['help_text']['font'][0], 13, 'bold'),
                 bg=COLORS['bg_main'], fg=COLORS['text']).pack(pady=(0, 10))
         
         tk.Label(frame, text=text, **STYLES['help_text']).pack()
         
-        tk.Button(frame, text="Fermer", command=help_window.destroy,
+        tk.Button(frame, text="Close", command=help_window.destroy,
                  **STYLES['button']).pack(pady=(15, 0))
         
         # Centrer la fenêtre

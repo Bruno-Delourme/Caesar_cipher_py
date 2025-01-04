@@ -34,7 +34,7 @@ def keyword_cipher(text, keyword, decrypt=False):
     return result
 
 def save_history(text, result, method, action):
-    with open('historique.txt', 'a', encoding='utf-8') as f:
+    with open('history.txt', 'a', encoding='utf-8') as f:
         f.write(f"{method} - {action}: '{text}' → '{result}'\n")
 
 def display_cipher_alphabet(method, shift=None, keyword=None):
@@ -45,88 +45,88 @@ def display_cipher_alphabet(method, shift=None, keyword=None):
         keyword = ''.join(dict.fromkeys(keyword.lower()))
         cipher_alphabet = keyword + ''.join(c for c in alphabet if c not in keyword)
     
-    print("\nCorrespondance des alphabets:")
-    print("Original :", ' '.join(alphabet))
-    print("Chiffré  :", ' '.join(cipher_alphabet))
+    print("\nAlphabet correspondence:")
+    print("Original:", ' '.join(alphabet))
+    print("Cipher  :", ' '.join(cipher_alphabet))
     print()
 
 def menu():
     while True:
-        print("\n=== Menu de Chiffrement ===")
-        print("1. Chiffrement César")
-        print("2. Chiffrement par mot-clé")
-        print("3. Voir l'historique")
-        print("4. Effacer l'historique")
-        print("5. Quitter")
+        print("\n=== Encryption Menu ===")
+        print("1. Caesar Cipher")
+        print("2. Keyword Cipher")
+        print("3. View History")
+        print("4. Clear History")
+        print("5. Exit")
         
-        choix = input("\nChoisissez une option (1-5): ")
+        choice = input("\nChoose an option (1-5): ")
         
-        if choix == "5":
-            print("Au revoir!")
+        if choice == "5":
+            print("Goodbye!")
             break
             
-        if choix == "3":
+        if choice == "3":
             try:
-                with open('historique.txt', 'r', encoding='utf-8') as f:
-                    historique = f.read()
-                    print("\n=== Historique des chiffrements ===")
-                    print(historique if historique else "Aucun historique disponible")
+                with open('history.txt', 'r', encoding='utf-8') as f:
+                    history = f.read()
+                    print("\n=== Encryption History ===")
+                    print(history if history else "No history available")
                 continue
             except FileNotFoundError:
-                print("Aucun historique disponible")
+                print("No history available")
                 continue
                 
-        if choix == "4":
+        if choice == "4":
             try:
-                with open('historique.txt', 'w', encoding='utf-8') as f:
+                with open('history.txt', 'w', encoding='utf-8') as f:
                     f.write("")
-                print("L'historique a été effacé avec succès!")
+                print("History cleared successfully!")
             except:
-                print("Erreur lors de l'effacement de l'historique")
+                print("Error while clearing history")
             continue
                 
-        texte = input("Entrez le texte à traiter: ")
+        text = input("Enter text to process: ")
         
-        if choix == "1":
+        if choice == "1":
             try:
-                decalage = int(input("Entrez le décalage (nombre entier): "))
-                display_cipher_alphabet("caesar", shift=decalage)
-                action = input("Chiffrer (C) ou Déchiffrer (D)? ").upper()
+                shift = int(input("Enter shift value (integer): "))
+                display_cipher_alphabet("caesar", shift=shift)
+                action = input("Encrypt (E) or Decrypt (D)? ").upper()
                 
-                if action == "C":
-                    resultat = caesar_cipher(texte, decalage)
-                    save_history(texte, resultat, "César", "Chiffrement")
+                if action == "E":
+                    result = caesar_cipher(text, shift)
+                    save_history(text, result, "Caesar", "Encryption")
                 elif action == "D":
-                    resultat = caesar_cipher(texte, decalage, decrypt=True)
-                    save_history(texte, resultat, "César", "Déchiffrement")
+                    result = caesar_cipher(text, shift, decrypt=True)
+                    save_history(text, result, "Caesar", "Decryption")
                 else:
-                    print("Action non valide!")
+                    print("Invalid action!")
                     continue
                     
-                print(f"\nRésultat: {resultat}")
+                print(f"\nResult: {result}")
                 
             except ValueError:
-                print("Erreur: Le décalage doit être un nombre entier!")
+                print("Error: Shift must be an integer!")
                 
-        elif choix == "2":
-            mot_cle = input("Entrez le mot-clé: ")
-            display_cipher_alphabet("keyword", keyword=mot_cle)
-            action = input("Chiffrer (C) ou Déchiffrer (D)? ").upper()
+        elif choice == "2":
+            keyword = input("Enter keyword: ")
+            display_cipher_alphabet("keyword", keyword=keyword)
+            action = input("Encrypt (E) or Decrypt (D)? ").upper()
             
-            if action == "C":
-                resultat = keyword_cipher(texte, mot_cle)
-                save_history(texte, resultat, f"Mot-clé ({mot_cle})", "Chiffrement")
+            if action == "E":
+                result = keyword_cipher(text, keyword)
+                save_history(text, result, f"Keyword ({keyword})", "Encryption")
             elif action == "D":
-                resultat = keyword_cipher(texte, mot_cle, decrypt=True)
-                save_history(texte, resultat, f"Mot-clé ({mot_cle})", "Déchiffrement")
+                result = keyword_cipher(text, keyword, decrypt=True)
+                save_history(text, result, f"Keyword ({keyword})", "Decryption")
             else:
-                print("Action non valide!")
+                print("Invalid action!")
                 continue
                 
-            print(f"\nRésultat: {resultat}")
+            print(f"\nResult: {result}")
             
         else:
-            print("Option non valide!")
+            print("Invalid option!")
 
 if __name__ == "__main__":
     menu()
