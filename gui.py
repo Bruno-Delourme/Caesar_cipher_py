@@ -111,8 +111,46 @@ class CipherGUI:
         self.copy_button.pack(side=tk.LEFT, padx=5)
         self.copy_button['state'] = 'disabled'
         
-        # Binding des événements
-        self.cipher_method.trace('w', self.update_param_label)
+        # Ajout d'une zone d'animation
+        self.animation_frame = tk.Frame(main_frame, bg=COLORS['bg_main'])
+        self.animation_frame.pack(pady=10)
+        
+        # Création de 26 labels pour représenter l'alphabet
+        self.letter_labels = []
+        alphabet_frame = tk.Frame(self.animation_frame, bg=COLORS['bg_main'])
+        alphabet_frame.pack()
+        
+        for c in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ':
+            label = tk.Label(alphabet_frame, 
+                            text=c,
+                            width=2,
+                            **STYLES['animation_letter'])
+            label.pack(side=tk.LEFT, padx=1)
+            self.letter_labels.append(label)
+        
+        # Flèche de transformation
+        tk.Label(self.animation_frame, 
+                text="↓",
+                font=(FONT_FAMILY, 20),
+                bg=COLORS['bg_main']).pack(pady=5)
+        
+        # Labels pour les lettres chiffrées
+        self.cipher_labels = []
+        cipher_frame = tk.Frame(self.animation_frame, bg=COLORS['bg_main'])
+        cipher_frame.pack()
+        
+        for _ in range(26):
+            label = tk.Label(cipher_frame, 
+                            text="",
+                            width=2,
+                            **STYLES['animation_letter'])
+            label.pack(side=tk.LEFT, padx=1)
+            self.cipher_labels.append(label)
+
+        # Binding pour l'animation en temps réel
+        self.text_input.bind('<KeyRelease>', self.animate_encryption)
+        self.param_entry.bind('<KeyRelease>', self.animate_encryption)
+        self.cipher_method.trace('w', lambda *args: self.animate_encryption(None))
         
     def update_param_label(self, *args):
         if self.cipher_method.get() == "caesar":
@@ -211,6 +249,87 @@ HELLO → KBPPJ"""
         help_window.transient(self.root)
         help_window.grab_set()
         self.root.wait_window(help_window) 
+
+    def animate_encryption(self, event):
+        """Anime le processus de chiffrement"""
+        text = self.text_input.get().upper()
+        method = self.cipher_method.get()
+        param = self.param_entry.get()
+
+        # Réinitialiser les styles
+        for label in self.letter_labels + self.cipher_labels:
+            label.configure(**STYLES['animation_letter'])
+
+        try:
+            if method == "caesar":
+                # Animation du chiffrement César
+                try:
+                    shift = int(param) % 26
+                    for i in range(26):
+                        new_pos = (i + shift) % 26
+                        self.cipher_labels[i].configure(text=chr(65 + new_pos))
+                    
+                    # Mettre en évidence les lettres du texte en cours
+                    for c in text:
+                        if c.isalpha():
+                            pos = ord(c) - 65
+                            new_pos = (pos + shift) % 26
+                            
+                            # Highlight original letter
+                            self.letter_labels[pos].configure(**STYLES['animation_active'])
+                            
+                            # Highlight encrypted letter
+                            self.cipher_labels[pos].configure(**STYLES['animation_active'])
+                            
+                except ValueError:
+                    self.reset_animation()
+                    
+            elif method == "keyword":
+                # Animation du chiffrement par mot-clé
+                if param:
+                    keyword = param.upper()
+                    # Créer l'alphabet de substitution
+                    used_letters = []
+                    cipher_alphabet = ""
+                    
+                    # D'abord les lettres du mot-clé
+                    for c in keyword:
+                        if c.isalpha() and c not in used_letters:
+                            used_letters.append(c)
+                            cipher_alphabet += c
+                    
+                    # Puis le reste de l'alphabet
+                    for c in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ':
+                        if c not in used_letters:
+                            cipher_alphabet += c
+                    
+                    # Mettre à jour l'affichage
+                    for i in range(26):
+                        self.cipher_labels[i].configure(text=cipher_alphabet[i])
+                    
+                    # Mettre en évidence les lettres du texte en cours
+                    for c in text:
+                        if c.isalpha():
+                            pos = ord(c) - 65
+                            new_pos = cipher_alphabet.index(c)
+                            
+                            # Highlight original letter
+                            self.letter_labels[pos].configure(**STYLES['animation_active'])
+                            
+                            # Highlight encrypted letter
+                            self.cipher_labels[pos].configure(**STYLES['animation_active'])
+                else:
+                    self.reset_animation()
+                    
+        except Exception as e:
+            self.reset_animation()
+
+    def reset_animation(self):
+        """Réinitialise l'animation"""
+        for label in self.letter_labels:
+            label.configure(**STYLES['animation_letter'])
+        for label in self.cipher_labels:
+            label.configure(text="", **STYLES['animation_letter'])
 
     def clear_fields(self):
         """Réinitialise tous les champs"""
