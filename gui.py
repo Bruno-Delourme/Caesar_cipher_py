@@ -111,43 +111,47 @@ class CipherGUI:
         self.copy_button.pack(side=tk.LEFT, padx=5)
         self.copy_button['state'] = 'disabled'
         
-        # Ajout d'une zone d'animation
+        # Ajout d'une zone d'animation simplifiée
         self.animation_frame = tk.Frame(main_frame, bg=COLORS['bg_main'])
         self.animation_frame.pack(pady=10)
         
-        # Création de 26 labels pour représenter l'alphabet
+        # Création des labels pour l'alphabet original
         self.letter_labels = []
         alphabet_frame = tk.Frame(self.animation_frame, bg=COLORS['bg_main'])
         alphabet_frame.pack()
         
+        # Affichage de l'alphabet original
         for c in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ':
             label = tk.Label(alphabet_frame, 
                             text=c,
                             width=2,
-                            **STYLES['animation_letter'])
+                            bg=COLORS['bg_main'],
+                            font=('Helvetica', 12, 'bold'))
             label.pack(side=tk.LEFT, padx=1)
             self.letter_labels.append(label)
         
         # Flèche de transformation
         tk.Label(self.animation_frame, 
                 text="↓",
-                font=(FONT_FAMILY, 20),
+                font=('Helvetica', 20),
                 bg=COLORS['bg_main']).pack(pady=5)
         
-        # Labels pour les lettres chiffrées
+        # Labels pour l'alphabet chiffré
         self.cipher_labels = []
         cipher_frame = tk.Frame(self.animation_frame, bg=COLORS['bg_main'])
         cipher_frame.pack()
         
+        # Création des labels vides pour l'alphabet chiffré
         for _ in range(26):
             label = tk.Label(cipher_frame, 
                             text="",
                             width=2,
-                            **STYLES['animation_letter'])
+                            bg=COLORS['bg_main'],
+                            font=('Helvetica', 12, 'bold'))
             label.pack(side=tk.LEFT, padx=1)
             self.cipher_labels.append(label)
 
-        # Binding pour l'animation en temps réel
+        # Binding pour l'animation
         self.text_input.bind('<KeyRelease>', self.animate_encryption)
         self.param_entry.bind('<KeyRelease>', self.animate_encryption)
         self.cipher_method.trace('w', lambda *args: self.animate_encryption(None))
@@ -159,11 +163,11 @@ class CipherGUI:
             self.param_label.config(text="Keyword:")
             
     def copy_result(self):
-        """Copie uniquement le texte chiffré/déchiffré sans le préfixe 'Résultat: '"""
+        """Copie uniquement le texte chiffré/déchiffré sans le préfixe 'Result: '"""
         result_text = self.result_var.get()
-        # Enlève le préfixe "Résultat: " s'il existe
-        if result_text.startswith("Résultat: "):
-            result_text = result_text[9:]  # Longueur de "Résultat: "
+        # Enlève le préfixe "Result: " s'il existe
+        if result_text.startswith("Result: "):
+            result_text = result_text[8:]  # Longueur de "Result: "
             
         self.root.clipboard_clear()
         self.root.clipboard_append(result_text)
@@ -256,80 +260,40 @@ HELLO → KBPPJ"""
         method = self.cipher_method.get()
         param = self.param_entry.get()
 
-        # Réinitialiser les styles
+        # Réinitialiser les couleurs
         for label in self.letter_labels + self.cipher_labels:
-            label.configure(**STYLES['animation_letter'])
+            label.configure(bg=COLORS['bg_main'], fg=COLORS['text'])
 
         try:
             if method == "caesar":
-                # Animation du chiffrement César
                 try:
                     shift = int(param) % 26
+                    # Mise à jour de l'alphabet chiffré
                     for i in range(26):
                         new_pos = (i + shift) % 26
                         self.cipher_labels[i].configure(text=chr(65 + new_pos))
                     
-                    # Mettre en évidence les lettres du texte en cours
+                    # Mise en évidence des lettres du texte
                     for c in text:
                         if c.isalpha():
                             pos = ord(c) - 65
-                            new_pos = (pos + shift) % 26
-                            
-                            # Highlight original letter
-                            self.letter_labels[pos].configure(**STYLES['animation_active'])
-                            
-                            # Highlight encrypted letter
-                            self.cipher_labels[pos].configure(**STYLES['animation_active'])
+                            # Mettre en surbrillance
+                            self.letter_labels[pos].configure(bg=COLORS['accent'], fg='white')
+                            self.cipher_labels[pos].configure(bg=COLORS['accent'], fg='white')
                             
                 except ValueError:
                     self.reset_animation()
                     
-            elif method == "keyword":
-                # Animation du chiffrement par mot-clé
-                if param:
-                    keyword = param.upper()
-                    # Créer l'alphabet de substitution
-                    used_letters = []
-                    cipher_alphabet = ""
-                    
-                    # D'abord les lettres du mot-clé
-                    for c in keyword:
-                        if c.isalpha() and c not in used_letters:
-                            used_letters.append(c)
-                            cipher_alphabet += c
-                    
-                    # Puis le reste de l'alphabet
-                    for c in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ':
-                        if c not in used_letters:
-                            cipher_alphabet += c
-                    
-                    # Mettre à jour l'affichage
-                    for i in range(26):
-                        self.cipher_labels[i].configure(text=cipher_alphabet[i])
-                    
-                    # Mettre en évidence les lettres du texte en cours
-                    for c in text:
-                        if c.isalpha():
-                            pos = ord(c) - 65
-                            new_pos = cipher_alphabet.index(c)
-                            
-                            # Highlight original letter
-                            self.letter_labels[pos].configure(**STYLES['animation_active'])
-                            
-                            # Highlight encrypted letter
-                            self.cipher_labels[pos].configure(**STYLES['animation_active'])
-                else:
-                    self.reset_animation()
-                    
         except Exception as e:
+            print(f"Error in animation: {e}")
             self.reset_animation()
 
     def reset_animation(self):
         """Réinitialise l'animation"""
         for label in self.letter_labels:
-            label.configure(**STYLES['animation_letter'])
+            label.configure(bg=COLORS['bg_main'], fg=COLORS['text'])
         for label in self.cipher_labels:
-            label.configure(text="", **STYLES['animation_letter'])
+            label.configure(text="", bg=COLORS['bg_main'], fg=COLORS['text'])
 
     def clear_fields(self):
         """Réinitialise tous les champs"""

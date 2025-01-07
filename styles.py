@@ -112,5 +112,19 @@ STYLES = {
         'pady': 5,
         'justify': 'left',
         'wraplength': 400
+    },
+    'animation_letter': {
+        'font': ('Helvetica', 12, 'bold'),
+        'bg': COLORS['bg_main'],
+        'fg': COLORS['text'],
+        'pady': 5,
+        'relief': 'flat'
+    },
+    'animation_active': {
+        'font': ('Helvetica', 12, 'bold'),
+        'bg': COLORS['accent'],
+        'fg': 'white',
+        'pady': 5,
+        'relief': 'flat'
     }
 } 
