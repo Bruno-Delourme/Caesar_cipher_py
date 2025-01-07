@@ -126,5 +126,30 @@ STYLES = {
         'fg': 'white',
         'pady': 5,
         'relief': 'flat'
+    },
+    'animation_frame': {
+        'bg': COLORS['bg_main'],
+        'pady': 10
+    },
+    'original_letter': {
+        'width': 2,
+        'bg': COLORS['bg_main'],
+        'font': ('Helvetica', 12, 'bold'),
+        'padx': 1
+    },
+    'cipher_letter': {
+        'width': 2,
+        'bg': COLORS['bg_main'],
+        'font': ('Helvetica', 12, 'bold'),
+        'padx': 1
+    },
+    'arrow': {
+        'font': ('Helvetica', 20),
+        'bg': COLORS['bg_main'],
+        'pady': 5
+    },
+    'highlighted_letter': {
+        'bg': COLORS['accent'],
+        'fg': 'white'
     }
 } 

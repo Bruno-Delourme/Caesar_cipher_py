@@ -112,43 +112,40 @@ class CipherGUI:
         self.copy_button['state'] = 'disabled'
         
         # Ajout d'une zone d'animation simplifiée
-        self.animation_frame = tk.Frame(main_frame, bg=COLORS['bg_main'])
-        self.animation_frame.pack(pady=10)
+        self.animation_frame = tk.Frame(main_frame, **STYLES['animation_frame'])
+        self.animation_frame.pack()
         
         # Création des labels pour l'alphabet original
-        self.letter_labels = []
         alphabet_frame = tk.Frame(self.animation_frame, bg=COLORS['bg_main'])
         alphabet_frame.pack()
         
+        self.letter_labels = []
         # Affichage de l'alphabet original
         for c in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ':
             label = tk.Label(alphabet_frame, 
                             text=c,
-                            width=2,
-                            bg=COLORS['bg_main'],
-                            font=('Helvetica', 12, 'bold'))
-            label.pack(side=tk.LEFT, padx=1)
+                            **STYLES['original_letter'])
+            label.pack(side=tk.LEFT)
             self.letter_labels.append(label)
         
-        # Flèche de transformation
-        tk.Label(self.animation_frame, 
+        # Flèche de transformation (initialement cachée)
+        self.arrow_label = tk.Label(alphabet_frame, 
                 text="↓",
-                font=('Helvetica', 20),
-                bg=COLORS['bg_main']).pack(pady=5)
+                **STYLES['arrow'])
+        self.arrow_label.pack()
+        self.arrow_label.pack_forget()  # Cache la flèche au démarrage
         
         # Labels pour l'alphabet chiffré
-        self.cipher_labels = []
         cipher_frame = tk.Frame(self.animation_frame, bg=COLORS['bg_main'])
         cipher_frame.pack()
         
+        self.cipher_labels = []
         # Création des labels vides pour l'alphabet chiffré
         for _ in range(26):
             label = tk.Label(cipher_frame, 
                             text="",
-                            width=2,
-                            bg=COLORS['bg_main'],
-                            font=('Helvetica', 12, 'bold'))
-            label.pack(side=tk.LEFT, padx=1)
+                            **STYLES['cipher_letter'])
+            label.pack(side=tk.LEFT)
             self.cipher_labels.append(label)
 
         # Binding pour l'animation
@@ -195,6 +192,10 @@ class CipherGUI:
                 
             self.result_var.set(f"Result: {result}")
             self.copy_button['state'] = 'normal'
+            
+            # Afficher/Cacher la flèche selon l'opération
+            self.arrow_label.pack(pady=5)
+            self.arrow_label.configure(text="↑" if decrypt else "↓")
             
         except ValueError as e:
             messagebox.showerror("Error", "Invalid parameter!")
@@ -278,8 +279,8 @@ HELLO → KBPPJ"""
                         if c.isalpha():
                             pos = ord(c) - 65
                             # Mettre en surbrillance
-                            self.letter_labels[pos].configure(bg=COLORS['accent'], fg='white')
-                            self.cipher_labels[pos].configure(bg=COLORS['accent'], fg='white')
+                            self.letter_labels[pos].configure(**STYLES['highlighted_letter'])
+                            self.cipher_labels[pos].configure(**STYLES['highlighted_letter'])
                             
                 except ValueError:
                     self.reset_animation()
@@ -300,4 +301,5 @@ HELLO → KBPPJ"""
         self.text_input.delete(0, tk.END)
         self.param_entry.delete(0, tk.END)
         self.result_var.set("")
-        self.copy_button['state'] = 'disabled' 
+        self.copy_button['state'] = 'disabled'
+        self.arrow_label.pack_forget()  # Cache la flèche quand on efface 
