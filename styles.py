@@ -24,14 +24,14 @@ THEMES = {
     }
 }
 
-# Couleurs actuelles (initialement en mode clair)
+# Couleurs actuelles (initialement mode clair)
 COLORS = THEMES['light'].copy()
 
 def update_styles(theme='light'):
     """Met à jour les couleurs en fonction du thème"""
     COLORS.update(THEMES[theme])
     
-    # Mise à jour des styles avec les nouvelles couleurs
+    
     STYLES.update({
         'frame': {
             'bg': COLORS['bg_main'],
@@ -186,7 +186,7 @@ WIDGET_CONFIG = {
 STYLES = {
     'frame': {
         'bg': COLORS['bg_main'],
-        'padx': 35,            # Padding légèrement augmenté
+        'padx': 35,            
         'pady': 30
     },
     'label': {
@@ -198,7 +198,7 @@ STYLES = {
     'entry': {
         'font': (FONT_FAMILY, 11),
         'bg': COLORS['bg_input'],
-        'relief': 'flat',      # Bordure plate plus moderne
+        'relief': 'flat',      
         'borderwidth': 0,
         'width': 50
     },
@@ -210,15 +210,15 @@ STYLES = {
         'width': 15
     },
     'button': {
-        'font': (FONT_FAMILY, 10, 'bold'),  # Texte en gras
+        'font': (FONT_FAMILY, 10, 'bold'), 
         'bg': COLORS['accent'],
         'fg': 'white',
-        'pady': 10,            # Padding augmenté
+        'pady': 10,            
         'padx': 20,
         'relief': 'flat',
         'cursor': 'hand2',
-        'borderwidth': 0,      # Pas de bordure
-        'highlightthickness': 0  # Supprime la bordure de focus
+        'borderwidth': 0,      
+        'highlightthickness': 0  
     },
     'result': {
         'font': ('Helvetica', 12, 'bold'),
