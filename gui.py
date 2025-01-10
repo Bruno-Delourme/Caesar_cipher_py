@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-from styles import STYLES, COLORS, WIDGET_CONFIG, THEMES, update_styles
+from styles import STYLES, COLORS, WIDGET_CONFIG, THEMES, update_styles, THEME_STYLES, DARK_MODE_UPDATES
 from cipher_logic import caesar_cipher, keyword_cipher, display_cipher_alphabet
 from theme import ThemeManager
 
@@ -154,14 +154,14 @@ class CipherGUI:
         self.cipher_method.trace('w', lambda *args: self.animate_encryption(None))
         
         # Ajout du bouton de thème
-        theme_frame = tk.Frame(main_frame, bg=COLORS['bg_main'])
-        theme_frame.pack(pady=10, anchor='e')  # 'e' pour aligner à droite
+        theme_frame = tk.Frame(main_frame, **THEME_STYLES['theme_frame'])
+        theme_frame.pack(anchor='e')
         
         self.theme_button = tk.Button(
             theme_frame,
-            text="🌙 Dark Mode",  # Emoji lune pour le mode sombre
+            text="Dark Mode",
             command=self.toggle_theme,
-            **STYLES['theme_button']
+            **THEME_STYLES['theme_button']
         )
         self.theme_button.pack(side=tk.RIGHT, padx=10)
         
@@ -325,34 +325,39 @@ HELLO → KBPPJ"""
         update_styles(new_theme)
         
         # Mise à jour du texte du bouton
-        self.theme_button.configure(
-            text="☀️ Light Mode" if new_theme == 'dark' else "🌙 Dark Mode"
-        )
+        self.theme_button.configure(text="Light Mode" if new_theme == 'dark' else "Dark Mode")
         
         # Mise à jour de tous les widgets
         self.update_all_widgets()
 
     def update_all_widgets(self):
         """Met à jour les couleurs de tous les widgets"""
-        # Mise à jour du frame principal
+        # Mise à jour des frames
         for widget in self.root.winfo_children():
             if isinstance(widget, tk.Frame):
-                widget.configure(bg=COLORS['bg_main'])
-            
+                widget.configure(**DARK_MODE_UPDATES['frame'])
+        
         # Mise à jour des labels
         for label in self.letter_labels + self.cipher_labels:
-            label.configure(bg=COLORS['bg_main'], fg=COLORS['text'])
+            label.configure(**DARK_MODE_UPDATES['label'])
         
         # Mise à jour des frames d'animation
-        self.animation_frame.configure(bg=COLORS['bg_main'])
-        self.arrow_label.configure(bg=COLORS['bg_main'])
+        self.animation_frame.configure(**DARK_MODE_UPDATES['frame'])
+        self.arrow_label.configure(**DARK_MODE_UPDATES['label'])
         
         # Mise à jour des entrées
-        self.text_input.configure(bg=COLORS['bg_input'], fg=COLORS['text'])
-        self.param_entry.configure(bg=COLORS['bg_input'], fg=COLORS['text'])
+        self.text_input.configure(**DARK_MODE_UPDATES['entry'])
+        self.param_entry.configure(**DARK_MODE_UPDATES['entry'])
         
-        # Mise à jour des autres widgets
-        self.theme_button.configure(**STYLES['theme_button'])
+        # Mise à jour des radio buttons
+        for widget in self.root.winfo_children():
+            if isinstance(widget, tk.Radiobutton):
+                widget.configure(**DARK_MODE_UPDATES['radio'])
+            
+        # Mise à jour des labels
+        for widget in self.root.winfo_children():
+            if isinstance(widget, tk.Label):
+                widget.configure(**DARK_MODE_UPDATES['label'])
         
         # Forcer le rafraîchissement de l'interface
         self.root.update() 
